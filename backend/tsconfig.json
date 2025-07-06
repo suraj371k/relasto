@@ -6,7 +6,7 @@
     "module": "commonjs",                                /* Specify what module code is generated. */
     "esModuleInterop": true,                             /* Emit additional JavaScript to ease support g in node. */
     "forceConsistentCasingInFileNames": true,            /* Ensure that casing is correct in imports. */
-    "rootDir": "./src",
+    "rootDir": ".",
     "outDir": "./dist",
 
 
