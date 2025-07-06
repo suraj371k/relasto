@@ -6,7 +6,7 @@ import cookieParser from 'cookie-parser'
 import connectDB from './config/db';
 
 //routes
-import userRoutes from '../src/routes/user.routes'
+import userRoutes from './routes/user.routes'
 
 const app = express();
 const PORT = process.env.PORT || 5000;
