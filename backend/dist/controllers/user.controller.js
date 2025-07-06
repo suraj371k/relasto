@@ -17,11 +17,13 @@ const register = async (req, res) => {
                 message: "validation failed",
                 errors: result.error.flatten().fieldErrors,
             });
+            return;
         }
         const { name, email, password, role, phoneNumber } = req.body;
         const existingUser = await user_model_1.User.findOne({ email });
         if (existingUser) {
             res.status(400).json({ success: false, message: "user already exist" });
+            return;
         }
         //hash the password
         const hashedPassword = await bcryptjs_1.default.hash(password, 10);
@@ -64,6 +66,7 @@ const login = async (req, res) => {
                 message: "validation failed",
                 error: result.error.flatten().fieldErrors,
             });
+            return;
         }
         const { password, email } = req.body;
         const user = await user_model_1.User.findOne({ email });
@@ -78,6 +81,7 @@ const login = async (req, res) => {
             res
                 .status(400)
                 .json({ success: false, message: "Invalid email or password" });
+            return;
         }
         const token = (0, jwt_1.generateToken)({
             userId: String(user._id),

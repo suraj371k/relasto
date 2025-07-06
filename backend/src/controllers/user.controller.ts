@@ -14,6 +14,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         message: "validation failed",
         errors: result.error.flatten().fieldErrors,
       });
+      return;
     }
 
     const { name, email, password, role, phoneNumber } = req.body;
@@ -22,6 +23,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     if (existingUser) {
       res.status(400).json({ success: false, message: "user already exist" });
+      return;
     }
 
     //hash the password
@@ -68,6 +70,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         message: "validation failed",
         error: result.error.flatten().fieldErrors,
       });
+      return;
     }
 
     const { password, email } = req.body;
@@ -85,6 +88,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       res
         .status(400)
         .json({ success: false, message: "Invalid email or password" });
+      return;
     }
 
     const token = generateToken({
