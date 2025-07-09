@@ -2,7 +2,7 @@ import mongoose, { Schema, Document, Types } from "mongoose";
 
 export interface IProperty extends Document {
   title: string;
-  description: string;
+  description: string; 
   price: number;
   parking: boolean;
   outdoor: boolean;
@@ -70,7 +70,6 @@ const propertySchema = new Schema<IProperty>({
     },
     images: {
         type: [String],
-        required: true,
     },
     propertyType: {
         type: String,

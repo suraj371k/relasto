@@ -7,6 +7,7 @@ import connectDB from './config/db';
 
 //routes
 import userRoutes from './routes/user.routes'
+import propertyRoutes from './routes/property.routes'
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -17,6 +18,7 @@ app.use(cors())
 
 //routes
 app.use('/api/auth' , userRoutes)
+app.use('/api/property' , propertyRoutes)
 
 //database connection
 connectDB()
