@@ -38,3 +38,30 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Node modules (for both frontend and backend)
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# Next.js build output
+.next/
+frontend/.next/
+out/
+frontend/out/
+
+# Build folders (for backend and frontend)
+build/
+frontend/build/
+backend/build/
+
+# Coverage reports
+coverage/
+frontend/coverage/
+backend/coverage/
+
+# Misc
+.DS_Store
+*.log
+*.tsbuildinfo
+.env*
