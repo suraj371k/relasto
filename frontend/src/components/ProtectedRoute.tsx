@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/authStore";
+import Dashboard from "@/app/(protected)/dashboard/page";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -55,5 +56,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     );
   }
 
-  return <>{children}</>;
+  return <>
+  <Dashboard />
+  {children}</>;
 } 

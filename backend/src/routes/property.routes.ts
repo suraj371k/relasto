@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { createProperty, deleteProperty, getAgentProperties, getAllProperties, getPropertyById, getSuggestedProperties, updateProperty } from "../controllers/property.controller";
+import { createProperty, deleteProperty, getAgentProperties, getAllProperties, getPropertyById, getSuggestedProperties, updateProperty, uploadPropertyImage} from "../controllers/property.controller";
+
 import { authenticate, isAgent } from "../middlewares/protected";
-import { upload } from "../models/upload";
+import { upload } from "../middlewares/upload";
 const router = Router()
 
 // Wrap async handler to catch errors and pass to next()
@@ -11,7 +12,9 @@ function asyncHandler(fn: any) {
   };
 }
 
-router.post('/create', authenticate , isAgent, upload.array("images"), asyncHandler(createProperty));
+router.post('/upload' , authenticate , isAgent , upload.array('images'), asyncHandler(uploadPropertyImage))
+
+router.post('/create' , authenticate , isAgent , asyncHandler(createProperty))
 
 router.get('/all' , asyncHandler(getAllProperties))
 

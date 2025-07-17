@@ -13,9 +13,10 @@ export interface IProperty extends Document {
   area: number;
   bedroom: number;
   bathroom: number;
-  images: [string];
+  images?: [string];
   propertyType: "house" | "apartment" | "villa" | "studio" | "commercial";
   furnishing: "furnished" | "semi-furnished" | "unfurnished";
+  status: "active" | "pending" | "sold"
 }
 
 const propertySchema = new Schema<IProperty>({
@@ -81,6 +82,11 @@ const propertySchema = new Schema<IProperty>({
         enum: ["furnished", "semi-furnished", "unfurnished"],
         required: true,
     },
+    status: {
+        type: String,
+        enum: ["active" , "pending" , "sold"],
+        required: true
+    }
 })
 
 const Property = mongoose.model<IProperty>("Property" , propertySchema);

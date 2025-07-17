@@ -29,7 +29,7 @@ export default function Login() {
     try {
       await login(data);
       toast.success("Login successful");
-      router.push("/dashboard");
+      router.push("/");
     } catch (error) {
       toast.error("Error in login");
     }

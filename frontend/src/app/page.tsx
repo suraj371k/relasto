@@ -1,9 +1,32 @@
-import Image from "next/image";
+"use client";
+
+import Featured from "@/components/home/Featured";
+import Header from "@/components/home/Header";
+import Simple from "@/components/home/Simple";
+import Dream from "@/components/home/Dream";
+import Stats from "@/components/home/Stats";
+import { useAuthStore } from "@/stores/authStore";
+import Dashboard from "./(protected)/dashboard/page";
 
 export default function Home() {
+  const { user } = useAuthStore();
+
+  const isUnauthenticated = !user;
+  const isNormalUser = user?.role === "user";
+
+  // If user is admin or other role, show Dashboard
+  if (!isUnauthenticated && !isNormalUser) {
+    return <Dashboard />;
+  }
+
+  // Show public or user home view
   return (
-    <div className="bg-blue-500">
-      home page
-    </div>
+    <>
+      <Header />
+      <Dream />
+      <Stats />
+      <Featured />
+      <Simple />
+    </>
   );
 }

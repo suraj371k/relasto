@@ -10,13 +10,13 @@ export const PropertySchema = z.object({
   outdoor: z.boolean(),
   ac: z.boolean(),
   yearBuilt: z.number().int().min(1800, "Year built is required"),
-  agentName: z.string().min(1, "Agent is required"), 
+  agentName: z.string().min(1, "Agent is required"),
   location: z.string().min(1, "Location is required"),
   area: z.number().min(0, "Area is required"),
   bedroom: z.number().int().min(0, "Bedroom count is required"),
   bathroom: z.number().int().min(0, "Bathroom count is required"),
-  images: z
-    .array(z.string().url("Image must be a valid URL")),
+  images: z.array(z.string().url("Image must be a valid URL")).optional(),
   propertyType: z.enum(["house", "apartment", "villa", "studio", "commercial"]),
   furnishing: z.enum(["furnished", "semi-furnished", "unfurnished"]),
+  status: z.enum(["active", "pending", "sold"]),
 });

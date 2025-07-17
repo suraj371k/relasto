@@ -11,7 +11,7 @@ export const storage = new CloudinaryStorage({
   cloudinary,
   params: () => ({
     folder: "real-estate-properties",
-    allowed_formats: ["jpeg", "png", "jpg"],
+    allowed_formats: ["jpeg", "png", "jpg" , "avif"],
     transformation: [{ width: 1200, height: 800, crop: "limit" }],
   }),
 });
