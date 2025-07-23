@@ -1,12 +1,12 @@
 "use client";
 
 import Featured from "@/components/home/Featured";
-import Header from "@/components/home/Header";
 import Simple from "@/components/home/Simple";
 import Dream from "@/components/home/Dream";
 import Stats from "@/components/home/Stats";
 import { useAuthStore } from "@/stores/authStore";
 import Dashboard from "./(protected)/dashboard/page";
+import Hero from "@/components/home/Hero";
 
 export default function Home() {
   const { user } = useAuthStore();
@@ -22,7 +22,7 @@ export default function Home() {
   // Show public or user home view
   return (
     <>
-      <Header />
+      <Hero />
       <Dream />
       <Stats />
       <Featured />

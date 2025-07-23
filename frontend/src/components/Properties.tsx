@@ -85,7 +85,7 @@ const Properties = () => {
                 </div>
                 <div className="flex justify-between">
                   <Button>
-                    <Link href={""}>View Details</Link>
+                    <Link href={`/listings/${property._id}`}>View Details</Link>
                   </Button>
                   <p className="text-2xl font-bold">${property.price}</p>
                 </div>

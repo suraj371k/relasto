@@ -4,6 +4,7 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 
 interface Properties {
+  _id: string;
   title: string;
   description: string;
   price: number;
@@ -11,7 +12,9 @@ interface Properties {
   outdoor: boolean;
   ac: boolean;
   yearBuilt: number;
-  agentName: string;
+  agentName:
+    | string
+    | { _id: string; name: string; email: string; phoneNumber: string };
   location: string;
   area: number;
   bedroom: number;
@@ -19,6 +22,7 @@ interface Properties {
   images: string[]; // fixed
   propertyType: "house" | "apartment" | "villa" | "studio" | "commercial";
   furnishing: "furnished" | "semi-furnished" | "unfurnished";
+  status: "active" | "sold" | "pending";
 }
 
 interface PropertiesState {
@@ -30,6 +34,7 @@ interface PropertiesState {
   createProperties: (data: Properties) => Promise<void>;
   uploadImages: (files: File[]) => Promise<string[]>;
   getAllProperties: () => void;
+  getPropertyBYId: (id: string) => Promise<void>;
 }
 
 export const usePropertiesStore = create<PropertiesState>((set) => ({
@@ -79,12 +84,21 @@ export const usePropertiesStore = create<PropertiesState>((set) => ({
 
   getAllProperties: async () => {
     try {
-      set({loading: true , error: null})
-      const response = await axios.get(`/api/property/all`)
-      set({properties: response.data.properties , loading: false})
+      set({ loading: true, error: null });
+      const response = await axios.get(`/api/property/all`);
+      set({ properties: response.data.properties, loading: false });
     } catch (error) {
-      set({loading: false , error: "error in get all properties"})
+      set({ loading: false, error: "error in get all properties" });
     }
-  }
+  },
 
+  getPropertyBYId: async (id: string) => {
+    try {
+      set({ loading: true, error: null });
+      const response = await axios.get(`/api/property/${id}`);
+      set({ properties: [response.data.property], loading: false });
+    } catch (error) {
+      set({ loading: false, error: "error in get property details" });
+    }
+  },
 }));

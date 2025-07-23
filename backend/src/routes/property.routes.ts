@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createProperty, deleteProperty, getAgentProperties, getAllProperties, getPropertyById, getSuggestedProperties, updateProperty, uploadPropertyImage} from "../controllers/property.controller";
+import { createProperty, deleteProperty, getAgentProperties, getAllProperties, getPropertyById, getSuggestedProperties, updateProperty, updatePropertyStatus, uploadPropertyImage} from "../controllers/property.controller";
 
 import { authenticate, isAgent } from "../middlewares/protected";
 import { upload } from "../middlewares/upload";
@@ -27,6 +27,8 @@ router.put('/:id' , isAgent , asyncHandler(updateProperty))
 router.get('/agent/:agentId' , isAgent , asyncHandler(getAgentProperties))
 
 router.get("/suggested" ,asyncHandler(getSuggestedProperties))
+
+router.put('/status/:id' , isAgent , asyncHandler(updatePropertyStatus))
 
 
 export default router;

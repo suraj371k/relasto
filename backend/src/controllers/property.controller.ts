@@ -226,7 +226,7 @@ export const getPropertyById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-    const property = await Property.findById(id);
+    const property = await Property.findById(id).populate("agentName", "name email phoneNumber")
 
     if (!property) {
       return res.status(404).json({ message: "Property not found" });
