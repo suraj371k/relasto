@@ -25,6 +25,7 @@ type FormValues = {
   images: string[];
   propertyType: "house" | "apartment" | "villa" | "studio" | "commercial";
   furnishing: "furnished" | "semi-furnished" | "unfurnished";
+  status: "active" | "pending" | "sold";
 };
 
 const propertyTypes = [
@@ -91,7 +92,6 @@ const CreatePropertyForm = () => {
           data.images = uploadedUrls;
         }
 
-        toast.loading("Creating property listing...", { id: toastId });
         await createProperties(data as any);
 
         // Clear form on success
@@ -244,6 +244,19 @@ const CreatePropertyForm = () => {
               {f.charAt(0).toUpperCase() + f.slice(1)}
             </option>
           ))}
+        </select>
+      </div>
+
+      {/* status */}
+      <div>
+        <Label>status</Label>
+        <select
+          {...register("status")}
+          className="border rounded-md px-3 py-2 w-full"
+        >
+           <option value={'active'}>Active</option>
+           <option value={'pending'}>Pending</option>
+           <option value={'sold'}>Sold</option>
         </select>
       </div>
 

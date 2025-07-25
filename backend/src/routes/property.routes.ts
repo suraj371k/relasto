@@ -1,9 +1,19 @@
 import { Router } from "express";
-import { createProperty, deleteProperty, getAgentProperties, getAllProperties, getPropertyById, getSuggestedProperties, updateProperty, updatePropertyStatus, uploadPropertyImage} from "../controllers/property.controller";
+import {
+  createProperty,
+  deleteProperty,
+  getAgentProperties,
+  getAllProperties,
+  getPropertyById,
+  getSuggestedProperties,
+  updateProperty,
+  updatePropertyStatus,
+  uploadPropertyImage,
+} from "../controllers/property.controller";
 
 import { authenticate, isAgent } from "../middlewares/protected";
 import { upload } from "../middlewares/upload";
-const router = Router()
+const router = Router();
 
 // Wrap async handler to catch errors and pass to next()
 function asyncHandler(fn: any) {
@@ -12,23 +22,38 @@ function asyncHandler(fn: any) {
   };
 }
 
-router.post('/upload' , authenticate , isAgent , upload.array('images'), asyncHandler(uploadPropertyImage))
+router.post(
+  "/upload",
+  authenticate,
+  isAgent,
+  upload.array("images"),
+  asyncHandler(uploadPropertyImage)
+);
 
-router.post('/create' , authenticate , isAgent , asyncHandler(createProperty))
+router.post("/create", authenticate, isAgent, asyncHandler(createProperty));
 
-router.get('/all' , asyncHandler(getAllProperties))
+router.get("/all", asyncHandler(getAllProperties));
 
-router.get('/:id' , asyncHandler(getPropertyById))
+router.get("/:id", asyncHandler(getPropertyById));
 
-router.delete("/:id" , isAgent , asyncHandler(deleteProperty))
+router.delete("/:id", authenticate, isAgent, asyncHandler(deleteProperty));
 
-router.put('/:id' , isAgent , asyncHandler(updateProperty))
+router.put("/:id", authenticate, isAgent, asyncHandler(updateProperty));
 
-router.get('/agent/:agentId' , isAgent , asyncHandler(getAgentProperties))
+router.get(
+  "/agent/:agentId",
+  authenticate,
+  isAgent,
+  asyncHandler(getAgentProperties)
+);
 
-router.get("/suggested" ,asyncHandler(getSuggestedProperties))
+router.get("/suggested", asyncHandler(getSuggestedProperties));
 
-router.put('/status/:id' , isAgent , asyncHandler(updatePropertyStatus))
-
+router.patch(
+  "/status/:id",
+  authenticate,
+  isAgent,
+  asyncHandler(updatePropertyStatus)
+);
 
 export default router;

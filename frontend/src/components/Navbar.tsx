@@ -33,7 +33,7 @@ const Navbar = () => {
     { id: 2, name: "Listings", href: "/listings" , role: "user" },
     { id: 3, name: "About us", href: "/about", role: "user" },
     { id: 4, name: "Agent", href: "/agents" , role: "user" },
-    {id: 5 , name: "My Listings" , href: "my-properties" , role: "agent"},
+    {id: 5 , name: "My Listings" , href: "agent-properties" , role: "agent"},
     {id: 6 , name: "Add Properties" , href: "/create-properties" , role: "agent"}
   ];
 

@@ -210,7 +210,7 @@ export const getAgentProperties = async (req: Request, res: Response) => {
     const { agentId } = req.params;
 
     // Find properties where agentName matches the given agentId
-    const properties = await Property.find({ agentName: agentId });
+    const properties = await Property.find({ agentName: agentId }).lean();
 
     return res.status(200).json({
       message: "Properties fetched successfully",
@@ -221,7 +221,7 @@ export const getAgentProperties = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-
+ 
 export const getPropertyById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

@@ -29,8 +29,15 @@ interface PropertiesState {
   properties: Properties[]; // fixed
   loading: boolean;
   error: string | null;
+  agentProperties: Properties[];
+  status: string;
 
   // actions
+  updateStatus: (
+    id: string,
+    newStatus: "active" | "pending" | "sold"
+  ) => Promise<void>;
+  getAgentProperties: (agentId: string) => Promise<void>;
   createProperties: (data: Properties) => Promise<void>;
   uploadImages: (files: File[]) => Promise<string[]>;
   getAllProperties: () => void;
@@ -40,25 +47,66 @@ interface PropertiesState {
 export const usePropertiesStore = create<PropertiesState>((set) => ({
   properties: [],
   loading: false,
+  agentProperties: [],
+  status: "active",
   error: null,
 
   createProperties: async (data) => {
     try {
       set({ loading: true, error: null });
+
       const response = await axios.post(`/api/property/create`, data);
+
       set((state) => ({
-        properties: [...state.properties, response.data.property], // ✅ fix here
+        properties: [...state.properties, response.data.property],
         loading: false,
       }));
     } catch (error: any) {
+      console.error("❌ Error response:", error.response?.data); // 🔍
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
         "Property creation failed";
 
       set({ loading: false, error: errorMessage });
-      console.error("Error creating property:", errorMessage);
       throw error;
+    }
+  },
+
+  updateStatus: async (
+    id: string,
+    newStatus: "active" | "pending" | "sold"
+  ) => {
+    try {
+      set({ loading: true, error: null });
+
+      const response = await axios.patch(`/api/property/status/${id}`, {
+        status: newStatus,
+      });
+
+      // Optional: update agentProperties in-place
+      set((state) => ({
+        agentProperties: state.agentProperties.map((prop) =>
+          prop._id === id ? { ...prop, status: newStatus } : prop
+        ),
+        loading: false,
+      }));
+    } catch (error: any) {
+      set({
+        loading: false,
+        error: error.response?.data?.message || "Failed to update status",
+      });
+    }
+  },
+
+  getAgentProperties: async (agentId: string) => {
+    try {
+      set({ loading: true, error: null });
+      const response = await axios.get(`/api/property/agent/${agentId}`);
+      
+      set({ agentProperties: response.data.properties, loading: false });
+    } catch (error: any) {
+      set({ loading: false, error: error.response?.data?.message });
     }
   },
 
