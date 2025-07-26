@@ -22,7 +22,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "react-hot-toast";
 
 const AgentProperties = () => {
-  const { loading, error, getAgentProperties, agentProperties, updateStatus } =
+  const { loading, error, getAgentProperties, agentProperties, updateStatus , deleteProperty } =
     usePropertiesStore();
   const { user } = useAuthStore();
 
@@ -126,6 +126,7 @@ const AgentProperties = () => {
                   </TableCell>
                   <TableCell>
                     <button
+                      onClick={() => deleteProperty(property._id)}
                       className="text-gray-400 hover:text-red-500 transition-colors p-2 rounded-full hover:bg-red-50"
                       aria-label="Delete property"
                     >

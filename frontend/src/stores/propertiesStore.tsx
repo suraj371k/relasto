@@ -42,6 +42,7 @@ interface PropertiesState {
   uploadImages: (files: File[]) => Promise<string[]>;
   getAllProperties: () => void;
   getPropertyBYId: (id: string) => Promise<void>;
+  deleteProperty: (id: string) => Promise<void>;
 }
 
 export const usePropertiesStore = create<PropertiesState>((set) => ({
@@ -70,6 +71,23 @@ export const usePropertiesStore = create<PropertiesState>((set) => ({
 
       set({ loading: false, error: errorMessage });
       throw error;
+    }
+  },
+
+  deleteProperty: async (id: string) => {
+    try {
+      set({ loading: true, error: null });
+      const response = await axios.delete(`/api/property/${id}`);
+          set((state) => ({
+      agentProperties: state.agentProperties.filter((prop) => prop._id !== id),
+      loading: false,
+    }));
+
+    } catch (error: any) {
+      set({
+        error: error.response?.data?.message || "Failed to delete property",
+        loading: false,
+      });
     }
   },
 
@@ -103,7 +121,7 @@ export const usePropertiesStore = create<PropertiesState>((set) => ({
     try {
       set({ loading: true, error: null });
       const response = await axios.get(`/api/property/agent/${agentId}`);
-      
+
       set({ agentProperties: response.data.properties, loading: false });
     } catch (error: any) {
       set({ loading: false, error: error.response?.data?.message });
