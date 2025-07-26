@@ -17,6 +17,7 @@ interface AuthState {
     isAuthenticated: boolean;
 
     //actions
+    getAgents: () => void;
     login: (userData: { email: string; password: string }) => void;
     logout: () => void;
     register: (userData: { name: string; email: string; password: string; phoneNumber: string; role: "user" | "agent" }) => void;
@@ -45,6 +46,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         set({ loading: false, error: errorMessage });
         console.log("error in login:", error.response?.data);
         throw error;
+    }
+   },
+
+   getAgents: async () => {
+    try {
+      set({loading:false , error: null})
+      const response = await axios.get('/api/auth/agents')
+      set({user: response.data.agents , loading: false})
+    } catch (error: any) {
+      set({loading: false , error: error.response.data})
     }
    },
 

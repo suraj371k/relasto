@@ -100,7 +100,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     res.status(200).json({
@@ -135,27 +135,39 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export const getProfile = async (req: Request , res: Response): Promise <void> => {
-    try {
+export const getProfile = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
     const user = (req as any).user;
     if (!user) {
-        res.status(401).json({ success: false, message: "Unauthorized" });
-        return;
+      res.status(401).json({ success: false, message: "Unauthorized" });
+      return;
     }
 
-    const dbUser = await User.findById(user.userId).select('-password');
+    const dbUser = await User.findById(user.userId).select("-password");
 
     if (!dbUser) {
-        res.status(404).json({ success: false, message: "User not found" });
-        return;
+      res.status(404).json({ success: false, message: "User not found" });
+      return;
     }
 
     res.status(200).json({
-        success: true,
-        user: dbUser
+      success: true,
+      user: dbUser,
     });
-    } catch (error) {
-        console.error("Error in get profile controller" , error)
-        res.status(500).json({succcess: false , message: "Internal server error"})
-    }
-}
+  } catch (error) {
+    console.error("Error in get profile controller", error);
+    res.status(500).json({ succcess: false, message: "Internal server error" });
+  }
+};
+
+export const getAgents = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const agents = await User.find({ role: "agent" });
+    res.status(200).json({ agents });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch agents" });
+  }
+};
