@@ -15,6 +15,7 @@ interface AuthState {
     loading: boolean;
     error: string | null;
     isAuthenticated: boolean;
+    agents: User[]
 
     //actions
     getAgents: () => void;
@@ -28,6 +29,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   loading: false,
   error: null,
+  agents: [],
 
   // Computed property
   get isAuthenticated() {
@@ -53,7 +55,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       set({loading:false , error: null})
       const response = await axios.get('/api/auth/agents')
-      set({user: response.data.agents , loading: false})
+      set({agents: response.data.agents , loading: false})
     } catch (error: any) {
       set({loading: false , error: error.response.data})
     }
