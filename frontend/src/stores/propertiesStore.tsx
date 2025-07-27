@@ -25,14 +25,31 @@ interface Properties {
   status: "active" | "sold" | "pending";
 }
 
+interface PropertyQueryParams {
+  search?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  propertyType?: string;
+  furnishing?: string;
+  bedroom?: number;
+  bathroom?: number;
+  location?: string;
+  page?: number;
+  limit?: number;
+}
+
 interface PropertiesState {
   properties: Properties[]; // fixed
   loading: boolean;
   error: string | null;
   agentProperties: Properties[];
   status: string;
+  total: number;
+  totalPages: number;
+  filters: PropertyQueryParams;
 
   // actions
+  setFilters: (filters: Partial<PropertyQueryParams>) => void;
   updateStatus: (
     id: string,
     newStatus: "active" | "pending" | "sold"
@@ -45,12 +62,35 @@ interface PropertiesState {
   deleteProperty: (id: string) => Promise<void>;
 }
 
-export const usePropertiesStore = create<PropertiesState>((set) => ({
+export const usePropertiesStore = create<PropertiesState>((set, get) => ({
   properties: [],
   loading: false,
   agentProperties: [],
   status: "active",
   error: null,
+  total: 0,
+  totalPages: 0,
+  filters: {
+    search: "",
+    minPrice: undefined,
+    maxPrice: undefined,
+    propertyType: "",
+    furnishing: "",
+    bedroom: undefined,
+    bathroom: undefined,
+    location: "",
+    page: 1,
+    limit: 10,
+  },
+
+  setFilters: (newFilters) => {
+    set((state) => ({
+      filters: {
+        ...state.filters,
+        ...newFilters,
+      },
+    }));
+  },
 
   createProperties: async (data) => {
     try {
@@ -78,11 +118,12 @@ export const usePropertiesStore = create<PropertiesState>((set) => ({
     try {
       set({ loading: true, error: null });
       const response = await axios.delete(`/api/property/${id}`);
-          set((state) => ({
-      agentProperties: state.agentProperties.filter((prop) => prop._id !== id),
-      loading: false,
-    }));
-
+      set((state) => ({
+        agentProperties: state.agentProperties.filter(
+          (prop) => prop._id !== id
+        ),
+        loading: false,
+      }));
     } catch (error: any) {
       set({
         error: error.response?.data?.message || "Failed to delete property",
@@ -150,9 +191,17 @@ export const usePropertiesStore = create<PropertiesState>((set) => ({
 
   getAllProperties: async () => {
     try {
+      const { filters } = get();
       set({ loading: true, error: null });
-      const response = await axios.get(`/api/property/all`);
-      set({ properties: response.data.properties, loading: false });
+      const response = await axios.get(`/api/property/all`, {
+        params: filters,
+      });
+      set({
+        properties: response.data.properties,
+        total: response.data.total,
+        totalPages: response.data.totalPages,
+        loading: false,
+      });
     } catch (error) {
       set({ loading: false, error: "error in get all properties" });
     }

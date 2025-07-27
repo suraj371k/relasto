@@ -15,7 +15,7 @@ const Properties = () => {
 
   const PropertyCardSkeleton = () => {
     return (
-      <div className="lg:w-[25vw] w-full flex flex-col rounded-xl border border-orange-300">
+      <div className="lg:w-[20vw] w-full flex flex-col rounded-xl border border-orange-300">
         <Skeleton className="h-48 w-full rounded-t-xl" />
         <div className="p-5 flex flex-col gap-7">
           <Skeleton className="h-5 w-2/3" />
@@ -46,11 +46,11 @@ const Properties = () => {
             <div key={index}>
               <div>
                 <img
-                  className="lg:w-[25vw] w-full rounded-t-xl"
+                  className="lg:w-[20vw] h-64 w-full rounded-t-xl"
                   src={property.images[0]}
                 />
               </div>
-              <div className="p-5 lg:w-[25vw] rounded-b-xl w-full flex flex-col gap-7 border border-orange-300">
+              <div className="p-5 lg:w-[20vw] rounded-b-xl w-full flex flex-col gap-7 border border-orange-300">
                 <div className="flex gap-4 items-center">
                   <LocationEdit />
                   <p className="text-xl font-semibold">{property.location}</p>
