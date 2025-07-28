@@ -164,7 +164,7 @@ const getAgentProperties = async (req, res) => {
     try {
         const { agentId } = req.params;
         // Find properties where agentName matches the given agentId
-        const properties = await property_model_1.default.find({ agentName: agentId });
+        const properties = await property_model_1.default.find({ agentName: agentId }).lean();
         return res.status(200).json({
             message: "Properties fetched successfully",
             properties,

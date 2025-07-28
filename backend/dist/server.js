@@ -17,7 +17,10 @@ const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5000;
 app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.json());
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({
+    origin: "http://localhot:3000",
+    credentials: true
+}));
 //routes
 app.use('/api/auth', user_routes_1.default);
 app.use('/api/property', property_routes_1.default);
