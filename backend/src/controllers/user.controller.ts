@@ -1,4 +1,4 @@
-import {Request, Response } from "express";
+import { Request, Response } from "express";
 import { AuthenticatedRequest } from "../middlewares/protected";
 import { LoginSchema, RegisterSchema } from "../schemas/user.schema";
 import { User } from "../models/user.model";
@@ -6,15 +6,16 @@ import bcrypt from "bcryptjs";
 import { generateToken } from "../utils/jwt";
 import { Agent } from "../models/agentsProfile.model";
 import mongoose from "mongoose";
+import { cloudinary } from "../utils/cloudinary";
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
-    //parse and validate with zod
+    // Parse and validate with zod
     const result = RegisterSchema.safeParse(req.body);
 
     if (!result.success) {
       res.status(400).json({
-        message: "validation failed",
+        message: "Validation failed",
         errors: result.error.flatten().fieldErrors,
       });
       return;
@@ -25,14 +26,14 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      res.status(400).json({ success: false, message: "user already exist" });
+      res.status(400).json({ success: false, message: "User already exists" });
       return;
     }
 
-    //hash the password
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    //create user
+    // Create user
     const user = await User.create({
       name,
       role,
@@ -41,7 +42,22 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       password: hashedPassword,
     });
 
-    //generate jwt token
+    // ✅ Auto-create Agent entry if role is agent
+    if (role === "agent") {
+      const existingAgent = await Agent.findOne({ user: user._id });
+      if (!existingAgent) {
+        await Agent.create({
+          user: user._id,
+          image: "default.jpg", // or accept from req.body
+          experience: 0,
+          rating: 0,
+          social: [],
+          reviews: [],
+        });
+      }
+    }
+
+    // Generate JWT token
     const token = generateToken({
       userId: String(user._id),
       role: user.role,
@@ -169,11 +185,17 @@ export const getProfile = async (
 export const getAllAgents = async (req: Request, res: Response) => {
   try {
     const agents = await Agent.find()
-      .populate("user", "name email phoneNumber role")
-      .populate("reviews.userId", "name email")
-      .exec();
+      .populate({
+        path: "user",
+        select: "name email phoneNumber role",
+        match: { role: "agent" }, // ✅ Only populate if user is an agent
+      })
+      .select("user image");
 
-    res.status(200).json({ success: true, agents });
+    // ❗ Filter out agents where the populated user is null (i.e., not agent)
+    const filteredAgents = agents.filter((agent) => agent.user !== null);
+
+    res.status(200).json({ success: true, agents: filteredAgents });
   } catch (error: any) {
     console.error("Error fetching agents:", error.message);
     res.status(500).json({
@@ -190,12 +212,12 @@ export const addReview = async (req: AuthenticatedRequest, res: Response) => {
     const { stars, comment } = req.body;
     const userId = req.user?.userId;
 
-    //validate input
     if (!stars || stars < 1 || stars > 5) {
       return res
         .status(400)
         .json({ success: false, message: "Stars must be between 1 and 5" });
     }
+
     if (!comment || comment.trim().length === 0) {
       return res
         .status(400)
@@ -214,14 +236,31 @@ export const addReview = async (req: AuthenticatedRequest, res: Response) => {
         .json({ success: false, message: "Invalid agent ID" });
     }
 
-    const agent = await Agent.findById(agentId);
+    // ✅ Find the agent by userId (not by _id of Agent)
+    const agent = await Agent.findOne({ user: agentId }).populate(
+      "user",
+      "role"
+    );
+
     if (!agent) {
       return res
         .status(404)
         .json({ success: false, message: "Agent not found" });
     }
 
-    // Prevent duplicate reviews (optional)
+    // ✅ Check that the associated user has role === "agent"
+    if (
+      !agent.user ||
+      typeof agent.user !== "object" ||
+      !("role" in agent.user) ||
+      (agent.user as any).role !== "agent"
+    ) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User is not an agent" });
+    }
+
+    // Prevent duplicate reviews
     const alreadyReviewed = agent.reviews.find(
       (r) => r.userId.toString() === userId
     );
@@ -230,6 +269,8 @@ export const addReview = async (req: AuthenticatedRequest, res: Response) => {
         .status(400)
         .json({ success: false, message: "You already reviewed this agent" });
     }
+
+    // Add the review
     agent.reviews.push({
       userId: new mongoose.Types.ObjectId(userId),
       comment,
@@ -243,18 +284,18 @@ export const addReview = async (req: AuthenticatedRequest, res: Response) => {
 
     await agent.save();
 
-    res
-      .status(201)
-      .json({ success: true, message: "Review added successfully", agent });
+    res.status(201).json({
+      success: true,
+      message: "Review added successfully",
+      agent,
+    });
   } catch (error: any) {
     console.error("Error adding review:", error.message);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Something went wrong",
-        error: error.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+      error: error.message,
+    });
   }
 };
 
@@ -263,13 +304,20 @@ export const getAgentReviews = async (req: Request, res: Response) => {
     const { agentId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(agentId)) {
-      return res.status(400).json({ success: false, message: "Invalid agent ID" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid agent ID" });
     }
 
-    const agent = await Agent.findById(agentId).populate("reviews.userId", "name email");
+    const agent = await Agent.findOne({ user: agentId }).populate(
+      "reviews.userId",
+      "name email"
+    );
 
     if (!agent) {
-      return res.status(404).json({ success: false, message: "Agent not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Agent not found" });
     }
 
     res.status(200).json({
@@ -278,6 +326,59 @@ export const getAgentReviews = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.error("Error fetching reviews:", error.message);
-    res.status(500).json({ success: false, message: "Server error", error: error.message });
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
+  }
+};
+
+export const updateAgentProfile = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
+  try {
+    const userId = req.user?.userId;
+
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid user ID" });
+    }
+
+    const { experience, social  } = req.body;
+    const file = req.file;
+
+    // Validate agent role
+    if (req.user?.role !== "agent") {
+      return res
+        .status(403)
+        .json({ success: false, message: "Only agents can update profile" });
+    }
+
+    const agent = await Agent.findOne({ user: userId });
+    if (!agent) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Agent profile not found" });
+    }
+
+    // ✅ Just use the already-uploaded image URL
+    if (file && file.path) {
+      agent.image = file.path;
+    }
+
+    if (experience) agent.experience = experience;
+    if (social) agent.social = Array.isArray(social) ? social : [social];
+
+    await agent.save();
+
+    return res.status(200).json({ success: true, agent });
+  } catch (error: any) {
+    console.error("Update error:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error?.message,
+    });
   }
 };

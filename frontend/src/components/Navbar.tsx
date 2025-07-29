@@ -29,10 +29,10 @@ import { useAuthStore } from "@/stores/authStore";
 const Navbar = () => {
   const pathname = usePathname();
   const items = [
-    { id: 1, name: "Home", href: "/"  , role: "user"},
-    { id: 2, name: "Listings", href: "/listings" , role: "user" },
-    { id: 3, name: "About us", href: "/about", role: "user" },
-    { id: 4, name: "Agent", href: "/agents" , role: "user" },
+    { id: 1, name: "Home", href: "/"  },
+    { id: 2, name: "Listings", href: "/listings"  },
+    { id: 3, name: "About us", href: "/about" },
+    { id: 4, name: "Agent", href: "/agents"  },
   ];
 
 
@@ -68,14 +68,14 @@ const Navbar = () => {
 
   const firstLetter = user?.name?.charAt(0).toUpperCase();
 
-  const filteredItems = items.filter(item => {
-    // If no role is specified, show to everyone
-    if (!item.role) return true;
-    // If user is not logged in, don't show role-specific items
-    if (!user) return false;
-    // Show if user's role matches item's role
-    return user.role === item.role;
-  });
+  // const filteredItems = items.filter(item => {
+  //   // If no role is specified, show to everyone
+  //   if (!item.role) return true;
+  //   // If user is not logged in, don't show role-specific items
+  //   if (!user) return false;
+  //   // Show if user's role matches item's role
+  //   return user.role === item.role;
+  // });
 
   return (
     <motion.nav
@@ -106,7 +106,7 @@ const Navbar = () => {
           initial="hidden"
           animate="visible"
         >
-          {filteredItems.map((item) => (
+          {items.map((item) => (
             <motion.div key={item.id} variants={itemVariants as any}>
               <Link
                 href={item.href}
@@ -217,7 +217,7 @@ const Navbar = () => {
                   initial="hidden"
                   animate="visible"
                 >
-                  {filteredItems.map((item) => (
+                  {items.map((item) => (
                     <motion.div key={item.id} variants={itemVariants as any}>
                       <Link
                         href={item.href}
