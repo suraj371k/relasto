@@ -19,7 +19,7 @@ interface Properties {
   area: number;
   bedroom: number;
   bathroom: number;
-  images: string[]; // fixed
+  images: string[]; 
   propertyType: "house" | "apartment" | "villa" | "studio" | "commercial";
   furnishing: "furnished" | "semi-furnished" | "unfurnished";
   status: "active" | "sold" | "pending";

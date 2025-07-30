@@ -188,11 +188,10 @@ export const getAllAgents = async (req: Request, res: Response) => {
       .populate({
         path: "user",
         select: "name email phoneNumber role",
-        match: { role: "agent" }, // ✅ Only populate if user is an agent
+        match: { role: "agent" },
       })
-      .select("user image");
+      .select("-__v");
 
-    // ❗ Filter out agents where the populated user is null (i.e., not agent)
     const filteredAgents = agents.filter((agent) => agent.user !== null);
 
     res.status(200).json({ success: true, agents: filteredAgents });
@@ -309,7 +308,7 @@ export const getAgentReviews = async (req: Request, res: Response) => {
         .json({ success: false, message: "Invalid agent ID" });
     }
 
-    const agent = await Agent.findOne({ user: agentId }).populate(
+    const agent = await Agent.findById(agentId).populate(
       "reviews.userId",
       "name email"
     );
@@ -345,7 +344,7 @@ export const updateAgentProfile = async (
         .json({ success: false, message: "Invalid user ID" });
     }
 
-    const { experience, social  } = req.body;
+    const { experience, social } = req.body;
     const file = req.file;
 
     // Validate agent role

@@ -21,7 +21,7 @@ const Footer = () => {
           <h3 className="text-md font-semibold mb-2">Quick Links</h3>
           <ul className="space-y-1 text-sm">
             <li><Link href="/" className="hover:underline">Home</Link></li>
-            <li><Link href="/properties" className="hover:underline">Properties</Link></li>
+            <li><Link href="/listings" className="hover:underline">Properties</Link></li>
             <li><Link href="/about" className="hover:underline">About Us</Link></li>
             <li><Link href="/contact" className="hover:underline">Contact</Link></li>
           </ul>
@@ -61,7 +61,7 @@ const Footer = () => {
 
       {/* Copyright */}
       <div className="text-center text-xs text-muted-foreground mt-10 px-2">
-        © {new Date().getFullYear()} DreamNest. All rights reserved.
+        © {new Date().getFullYear()} Relasto. All rights reserved.
       </div>
     </footer>
   );

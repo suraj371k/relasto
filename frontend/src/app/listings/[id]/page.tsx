@@ -40,9 +40,7 @@ export default function PropertyDetails() {
     message: "",
   });
 
-  const { user } = useAuthStore();
 
-  const isAgent = user?.role === "agent";
 
   useEffect(() => {
     getPropertyBYId(id);

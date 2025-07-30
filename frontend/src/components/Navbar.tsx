@@ -134,14 +134,6 @@ const Navbar = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
         >
-         {user?.role === "user" && <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              type="search"
-              placeholder="Search property..."
-              className="pl-10 w-[220px] focus-visible:ring-blue-500 focus-visible:ring-2"
-            />
-          </div>}
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -239,14 +231,7 @@ const Navbar = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
                 >
-                  <div className="relative mb-4">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <Input
-                      type="search"
-                      placeholder="Search property..."
-                      className="pl-10 w-full"
-                    />
-                  </div>
+          
                   <Button variant="default" className="w-full">
                     Login
                   </Button>

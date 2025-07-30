@@ -97,7 +97,7 @@ const EditProfilePage = () => {
                   accept="image/*"
                   onChange={handleImageChange}
                 />
-                <p className="text-sm text-muted-foreground mt-1">Upload a new profile picture</p>
+                <p className="text-sm text-muted-foreground mt-1">{'Upload a new profile picture'}</p>
               </div>
             </div>
           </div>
@@ -161,7 +161,7 @@ const EditProfilePage = () => {
 
           {/* Action Buttons */}
           <div className="flex gap-3 pt-4">
-            <Button onClick={handleUpdate} disabled={loading || !image} className="flex-1">
+            <Button onClick={handleUpdate} disabled={loading} className="flex-1">
               {loading ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
@@ -173,9 +173,6 @@ const EditProfilePage = () => {
                   Update Profile
                 </>
               )}
-            </Button>
-            <Button variant="outline" onClick={() => router.back()} disabled={loading}>
-              Cancel
             </Button>
           </div>
         </CardContent>
