@@ -16,7 +16,7 @@ app.use(cookieParser())
 
 app.use(express.json()); 
 app.use(cors({
-  origin: "http://localhot:3000",
+  origin: "*",
   credentials: true
 }))
 

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+import { baseURL } from "@/lib/baseUrl";
 
 axios.defaults.withCredentials = true;
 
@@ -54,7 +55,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   login: async (userData: { email: string; password: string }) => {
     try {
       set({ loading: true, error: null });
-      const response = await axios.post(`/api/auth/login`, userData, {
+      const response = await axios.post(`${baseURL}/api/auth/login`, userData, {
         withCredentials: true,
       });
       set({ user: response.data.user, loading: false });
@@ -70,7 +71,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   getAgents: async () => {
     try {
       set({ loading: false, error: null });
-      const response = await axios.get("/api/auth/agents");
+      const response = await axios.get(`${baseURL}/api/auth/agents`);
       set({ agents: response.data.agents, loading: false });
     } catch (error: any) {
       set({ loading: false, error: error.response.data });
@@ -80,9 +81,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   register: async (userData) => {
     try {
       set({ loading: true, error: null });
-      const response = await axios.post(`/api/auth/register`, userData, {
-        withCredentials: true,
-      });
+      const response = await axios.post(
+        `${baseURL}/api/auth/register`,
+        userData,
+        {
+          withCredentials: true,
+        }
+      );
       set({ user: response.data.user, loading: false });
     } catch (error: any) {
       const errorMessage =
@@ -95,7 +100,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   fetchProfile: async () => {
     try {
       set({ loading: true, error: null });
-      const response = await axios.get(`/api/auth/my-profile`);
+      const response = await axios.get(`${baseURL}/api/auth/my-profile`);
       set({ user: response.data.user, loading: false });
     } catch (error: any) {
       set({ loading: false, error: error.message });
@@ -120,12 +125,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       if (agentData.image) {
         formData.append("image", agentData.image);
       }
-      const response = await axios.put(`/api/auth/agents/profile`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        withCredentials: true,
-      });
+      const response = await axios.put(
+        `${baseURL}/api/auth/agents/profile`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
+        }
+      );
       set({ user: response.data.agent, loading: false });
     } catch (error: any) {
       const errorMessage =
@@ -139,7 +148,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   logout: async () => {
     try {
       set({ loading: true, error: null });
-      await axios.post(`/api/auth/logout`);
+      await axios.post(`${baseURL}/api/auth/logout`);
       set({ user: null, loading: false });
     } catch (error: any) {
       set({ loading: false, error: error.message });
