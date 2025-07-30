@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+import { baseURL } from "@/lib/baseUrl";
 
 axios.defaults.withCredentials = true;
 
@@ -96,7 +97,7 @@ export const usePropertiesStore = create<PropertiesState>((set, get) => ({
     try {
       set({ loading: true, error: null });
 
-      const response = await axios.post(`/api/property/create`, data);
+      const response = await axios.post(`${baseURL}/api/property/create`, data);
 
       set((state) => ({
         properties: [...state.properties, response.data.property],
@@ -117,7 +118,7 @@ export const usePropertiesStore = create<PropertiesState>((set, get) => ({
   deleteProperty: async (id: string) => {
     try {
       set({ loading: true, error: null });
-      const response = await axios.delete(`/api/property/${id}`);
+      const response = await axios.delete(`${baseURL}/api/property/${id}`);
       set((state) => ({
         agentProperties: state.agentProperties.filter(
           (prop) => prop._id !== id
@@ -139,7 +140,7 @@ export const usePropertiesStore = create<PropertiesState>((set, get) => ({
     try {
       set({ loading: true, error: null });
 
-      const response = await axios.patch(`/api/property/status/${id}`, {
+      const response = await axios.patch(`${baseURL}/api/property/status/${id}`, {
         status: newStatus,
       });
 
@@ -161,7 +162,7 @@ export const usePropertiesStore = create<PropertiesState>((set, get) => ({
   getAgentProperties: async (agentId: string) => {
     try {
       set({ loading: true, error: null });
-      const response = await axios.get(`/api/property/agent/${agentId}`);
+      const response = await axios.get(`${baseURL}/api/property/agent/${agentId}`);
 
       set({ agentProperties: response.data.properties, loading: false });
     } catch (error: any) {
@@ -174,7 +175,7 @@ export const usePropertiesStore = create<PropertiesState>((set, get) => ({
       const formData = new FormData();
       files.forEach((file) => formData.append("images", file));
 
-      const res = await axios.post("/api/property/upload", formData, {
+      const res = await axios.post(`${baseURL}/api/property/upload`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -193,7 +194,7 @@ export const usePropertiesStore = create<PropertiesState>((set, get) => ({
     try {
       const { filters } = get();
       set({ loading: true, error: null });
-      const response = await axios.get(`/api/property/all`, {
+      const response = await axios.get(`${baseURL}/api/property/all`, {
         params: filters,
       });
       set({
@@ -210,7 +211,7 @@ export const usePropertiesStore = create<PropertiesState>((set, get) => ({
   getPropertyBYId: async (id: string) => {
     try {
       set({ loading: true, error: null });
-      const response = await axios.get(`/api/property/${id}`);
+      const response = await axios.get(`${baseURL}/api/property/${id}`);
       set({ properties: [response.data.property], loading: false });
     } catch (error) {
       set({ loading: false, error: "error in get property details" });
