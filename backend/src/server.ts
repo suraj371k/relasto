@@ -22,7 +22,7 @@ app.use(express.json())
 
 // Allow specific origins and send credentials
 app.use(cors({
-  origin: "https://relasto-one.vercel.app",
+  origin: ["https://relasto-one.vercel.app" , "http://localhost:3000"],
   credentials: true
 }))
 
@@ -30,6 +30,10 @@ app.use(cors({
 app.use('/api/auth', userRoutes)
 app.use('/api/property', propertyRoutes)
 app.use('/api/contact', contactRoutes)
+
+app.get('/' , (req , res) => {
+  res.send("App is running on")
+})
 
 // DB connection
 connectDB()
