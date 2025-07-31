@@ -1,7 +1,5 @@
 import { Router } from "express";
 import {
-  addReview,
-  getAgentReviews,
   getAllAgents,
   getProfile,
   login,
@@ -19,22 +17,6 @@ router.post("/login", login);
 router.post("/logout", logout);
 router.get("/my-profile", authenticate, getProfile);
 router.get("/agents", authenticate, getAllAgents);
-
-router.post("/agents/:agentId/review", authenticate, async (req, res, next) => {
-  try {
-    await addReview(req, res);
-  } catch (err) {
-    next(err);
-  }
-});
-
-router.get("/agents/:agentId/review", authenticate, async (req, res, next) => {
-  try {
-    await getAgentReviews(req, res);
-  } catch (err) {
-    next(err);
-  }
-});
 
 
 router.put(

@@ -117,8 +117,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production", // ensure HTTPS in prod
+      sameSite: "none", // Capital N to match spec
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
@@ -202,132 +202,6 @@ export const getAllAgents = async (req: Request, res: Response) => {
       message: "Failed to fetch agents",
       error: error.message,
     });
-  }
-};
-
-export const addReview = async (req: AuthenticatedRequest, res: Response) => {
-  try {
-    const { agentId } = req.params;
-    const { stars, comment } = req.body;
-    const userId = req.user?.userId;
-
-    if (!stars || stars < 1 || stars > 5) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Stars must be between 1 and 5" });
-    }
-
-    if (!comment || comment.trim().length === 0) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Comment is required" });
-    }
-
-    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid user ID" });
-    }
-
-    if (!mongoose.Types.ObjectId.isValid(agentId)) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid agent ID" });
-    }
-
-    // ✅ Find the agent by userId (not by _id of Agent)
-    const agent = await Agent.findOne({ user: agentId }).populate(
-      "user",
-      "role"
-    );
-
-    if (!agent) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Agent not found" });
-    }
-
-    // ✅ Check that the associated user has role === "agent"
-    if (
-      !agent.user ||
-      typeof agent.user !== "object" ||
-      !("role" in agent.user) ||
-      (agent.user as any).role !== "agent"
-    ) {
-      return res
-        .status(400)
-        .json({ success: false, message: "User is not an agent" });
-    }
-
-    // Prevent duplicate reviews
-    const alreadyReviewed = agent.reviews.find(
-      (r) => r.userId.toString() === userId
-    );
-    if (alreadyReviewed) {
-      return res
-        .status(400)
-        .json({ success: false, message: "You already reviewed this agent" });
-    }
-
-    // Add the review
-    agent.reviews.push({
-      userId: new mongoose.Types.ObjectId(userId),
-      comment,
-      stars,
-      date: new Date(),
-    });
-
-    // Recalculate average rating
-    const totalStars = agent.reviews.reduce((sum, r) => sum + r.stars, 0);
-    agent.rating = parseFloat((totalStars / agent.reviews.length).toFixed(1));
-
-    await agent.save();
-
-    res.status(201).json({
-      success: true,
-      message: "Review added successfully",
-      agent,
-    });
-  } catch (error: any) {
-    console.error("Error adding review:", error.message);
-    res.status(500).json({
-      success: false,
-      message: "Something went wrong",
-      error: error.message,
-    });
-  }
-};
-
-export const getAgentReviews = async (req: Request, res: Response) => {
-  try {
-    const { agentId } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(agentId)) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid agent ID" });
-    }
-
-    const agent = await Agent.findById(agentId).populate(
-      "reviews.userId",
-      "name email"
-    );
-
-    if (!agent) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Agent not found" });
-    }
-
-    res.status(200).json({
-      success: true,
-      reviews: agent.reviews,
-    });
-  } catch (error: any) {
-    console.error("Error fetching reviews:", error.message);
-    res
-      .status(500)
-      .json({ success: false, message: "Server error", error: error.message });
   }
 };
 

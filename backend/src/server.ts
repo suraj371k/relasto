@@ -22,7 +22,7 @@ app.use(express.json())
 
 // Allow specific origins and send credentials
 app.use(cors({
-  origin: ["http://localhost:3000", "https://relasto-one.vercel.app"],
+  origin: "https://relasto-one.vercel.app",
   credentials: true
 }))
 
@@ -35,5 +35,5 @@ app.use('/api/contact', contactRoutes)
 connectDB()
 
 app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`)
+  console.log(`Server running on http://localhost:${PORT}`)
 })

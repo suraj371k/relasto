@@ -100,7 +100,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   fetchProfile: async () => {
     try {
       set({ loading: true, error: null });
-      const response = await axios.get(`${baseURL}/api/auth/my-profile`);
+      const response = await axios.get(`${baseURL}/api/auth/my-profile`, {
+        withCredentials: true
+      });
       set({ user: response.data.user, loading: false });
     } catch (error: any) {
       set({ loading: false, error: error.message });
