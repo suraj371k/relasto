@@ -27,6 +27,7 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { useAuthStore } from "@/stores/authStore";
+import SuggestedProperties from "@/components/SuggestedProperty";
 
 export default function PropertyDetails() {
   const params = useParams();
@@ -371,6 +372,9 @@ export default function PropertyDetails() {
             </CardContent>
           </Card>
         </div>
+      </div>
+      <div>
+        <SuggestedProperties />
       </div>
     </div>
   );

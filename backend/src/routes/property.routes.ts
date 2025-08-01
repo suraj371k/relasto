@@ -5,7 +5,6 @@ import {
   getAgentProperties,
   getAllProperties,
   getPropertyById,
-  getSuggestedProperties,
   updateProperty,
   updatePropertyStatus,
   uploadPropertyImage,
@@ -47,7 +46,6 @@ router.get(
   asyncHandler(getAgentProperties)
 );
 
-router.get("/suggested", asyncHandler(getSuggestedProperties));
 
 router.patch(
   "/status/:id",

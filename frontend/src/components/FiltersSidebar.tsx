@@ -81,6 +81,8 @@ const FiltersSidebar = () => {
           <option value="apartment">Apartment</option>
           <option value="house">House</option>
           <option value="villa">Villa</option>
+          <option value="studio">Studio</option>
+          <option value="commercial">Commercial</option>
         </select>
       </div>
 

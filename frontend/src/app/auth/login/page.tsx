@@ -76,7 +76,7 @@ export default function Login() {
 
           <div>
             <Button className="w-full" disabled={loading}>
-              {loading ? "Logging in..." : "Login"}
+              Login
             </Button>
           </div>
         </form>

@@ -242,22 +242,6 @@ export const getPropertyById = async (req: Request, res: Response) => {
   }
 };
 
-export const getSuggestedProperties = async (req: Request, res: Response) => {
-  try {
-    // Use MongoDB aggregation to get 4 random properties
-    const suggestedProperties = await Property.aggregate([
-      { $sample: { size: 4 } },
-    ]);
-
-    return res.status(200).json({
-      message: "Suggested properties fetched successfully",
-      properties: suggestedProperties,
-    });
-  } catch (error) {
-    console.error("Get Suggested Properties Error:", error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-};
 
 export const updatePropertyStatus = async (req: Request, res: Response) => {
   try {

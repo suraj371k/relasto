@@ -39,7 +39,7 @@ const Properties = () => {
   return (
     <div className="container py-10 mt-5 mx-auto gap-10 grid md:grid-cols-2 grid-cols-1 lg:grid-cols-3 place-items-center">
       {loading
-        ? Array.from({ length: 6 }).map((_, i) => (
+        ? Array.from({ length: properties.length }).map((_, i) => (
             <PropertyCardSkeleton key={i} />
           ))
         : properties.map((property, index) => (
