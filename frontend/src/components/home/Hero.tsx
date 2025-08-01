@@ -1,6 +1,7 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import * as motion from "motion/react-client"
+import Link from "next/link"
 
 const Hero = () => {
   return (
@@ -50,12 +51,14 @@ const Hero = () => {
               transition={{ delay: 0.4, duration: 0.6 }}
               className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
             >
+              <Link href={'/listings'}>
               <Button
                 size="lg"
-                className="text-base px-8 py-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                className="text-base cursor-pointer px-8 py-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
               >
                 Explore Properties
               </Button>
+              </Link>
               <Button
                 variant="outline"
                 size="lg"

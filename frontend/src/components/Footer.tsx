@@ -10,7 +10,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
         {/* Company Info */}
         <div>
-          <h2 className="text-xl font-semibold mb-3">DreamNest</h2>
+          <h2 className="text-xl font-semibold mb-3">Relasto</h2>
           <p className="text-sm text-muted-foreground">
             Your trusted partner in finding dream homes and lucrative investments.
           </p>
