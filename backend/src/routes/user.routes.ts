@@ -1,7 +1,6 @@
 import { Router } from "express";
 import {
   getAllAgents,
-  getProfile,
   login,
   logout,
   register,
@@ -15,7 +14,6 @@ const router = Router();
 router.post("/register", register);
 router.post("/login", login);
 router.post("/logout", logout);
-router.get("/my-profile", authenticate, getProfile);
 router.get("/agents", authenticate, getAllAgents);
 
 

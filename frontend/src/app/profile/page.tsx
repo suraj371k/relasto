@@ -1,7 +1,7 @@
 // app/profile/edit/page.tsx (or pages/profile/edit.tsx if using Pages Router)
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useAuthStore } from "@/stores/authStore"
 import {
   Card,
@@ -37,6 +37,13 @@ const EditProfilePage = () => {
       reader.readAsDataURL(file)
     }
   }
+  
+
+  useEffect(() => {
+    if(!user){
+        router.push('/auth/login')
+    }
+  })
 
   const addSocialLink = () => {
     if (socialInput.trim() && !social.includes(socialInput.trim())) {

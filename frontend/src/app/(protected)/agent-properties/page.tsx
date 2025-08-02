@@ -30,7 +30,7 @@ const AgentProperties = () => {
     if (user?._id) {
       getAgentProperties(user._id);
     }
-  }, [getAgentProperties, user?._id]);
+  }, [user?._id,  user]);
 
   useEffect(() => {
     if (error) {
