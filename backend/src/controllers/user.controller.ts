@@ -121,19 +121,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    let agentData = {};
-    if (user.role === "agent") {
-      const agent = await Agent.findOne({ user: user._id }).select(
-        "image experience social"
-      );
-      if (agent) {
-        agentData = {
-          image: agent.image,
-          experience: agent.experience,
-          social: agent.social,
-        };
-      }
-    }
 
     res.status(200).json({
       message: "Login successful",
@@ -144,7 +131,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         email: user.email,
         phoneNumber: user.phoneNumber,
         role: user.role,
-        ...agentData, 
       },
     });
   } catch (error) {
@@ -164,6 +150,53 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
     res.status(200).json({ success: true, message: "Logout successful" });
   } catch (error) {
     console.error("Login error:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+export const getProfile = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const user = (req as any).user;
+
+    if (!user) {
+      res.status(401).json({ success: false, message: "Unauthorized" });
+      return;
+    }
+
+    const dbUser = await User.findById(user.userId).select("-password");
+
+    if (!dbUser) {
+      res.status(404).json({ success: false, message: "User not found" });
+      return;
+    }
+
+    // ✅ Fetch agent profile and attach to user object
+    let agentData = null;
+    if (dbUser.role === "agent") {
+      const agent = await Agent.findOne({ user: dbUser._id }).select(
+        "image experience social"
+      );
+      if (agent) {
+        agentData = {
+          image: agent.image,
+          experience: agent.experience,
+          social: agent.social,
+        };
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      user: {
+        ...dbUser.toObject(),
+        ...(agentData || {}), // merge agent fields into user
+      },
+    });
+  } catch (error) {
+    console.error("Error in get profile controller", error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
