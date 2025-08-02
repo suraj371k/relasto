@@ -19,18 +19,32 @@ const SuggestedProperties = () => {
   const { properties, getAllProperties, loading } = usePropertiesStore();
   const [suggested, setSuggested] = useState<typeof properties>([]);
 
-  useEffect(() => {
-    const fetchAndSet = async () => {
-      if (properties.length === 0) {
-        await getAllProperties();
-      }
-      const activeOnly = properties.filter((p) => p.status === "active");
-      const shuffled = shuffleArray(activeOnly);
-      setSuggested(shuffled.slice(0, 4));
-    };
+ useEffect(() => {
+  const fetchAndSet = async () => {
+    if (properties.length === 0) {
+      await getAllProperties();
+    }
 
-    fetchAndSet();
-  }, [getAllProperties, properties]);
+    // Wait until properties are updated
+    const allProps = [...usePropertiesStore.getState().properties];
+
+    const activeProps = allProps.filter((p) => p.status === "active");
+    const shuffledActive = shuffleArray(activeProps);
+    let selected = shuffledActive.slice(0, 4);
+
+    if (selected.length < 4) {
+      const inactiveProps = allProps.filter(
+        (p) => p.status !== "active" && !selected.includes(p)
+      );
+      const shuffledInactive = shuffleArray(inactiveProps);
+      selected = [...selected, ...shuffledInactive.slice(0, 4 - selected.length)];
+    }
+
+    setSuggested(selected);
+  };
+
+  fetchAndSet();
+}, []);
 
   const PropertyCardSkeleton = () => {
     return (

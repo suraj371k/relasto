@@ -18,7 +18,7 @@ const FiltersSidebar = () => {
   }
 
   const handleApply = () => {
-    setFilters({ page: 1 }) // Reset to page 1 on filter change
+    setFilters({ page: 1 }) 
     getAllProperties()
   }
 
@@ -45,7 +45,7 @@ const FiltersSidebar = () => {
   }).length
 
   return (
-    <Card className="w-full mb-10  md:w-80 h-fit sticky top-4">
+    <Card className="w-full mb-10   h-fit sticky top-4">
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Filter className="h-5 w-5" />

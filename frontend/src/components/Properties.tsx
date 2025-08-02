@@ -37,7 +37,7 @@ const Properties = () => {
   };
 
   return (
-    <div className="container py-10 mt-5 mx-auto gap-10 grid md:grid-cols-2 grid-cols-1 lg:grid-cols-3 place-items-center">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-10 w-full">
       {loading
         ? Array.from({ length: properties.length }).map((_, i) => (
             <PropertyCardSkeleton key={i} />

@@ -43,8 +43,6 @@ export default function PropertyDetails() {
 
   const { user } = useAuthStore()
 
-  console.log("User image:", user?.image);
-
 
 
   useEffect(() => {
@@ -356,11 +354,12 @@ export default function PropertyDetails() {
             </CardHeader>
             <CardContent className="flex items-center gap-5">
               <div className="flex">
-                <Image
-      src={typeof user.image === "string" ? user.image : URL.createObjectURL(user.image)}
+                <img
+                src={typeof user?.image === "string" ? user.image : "/placeholder.svg"}
                   alt="agent image"
                   width={120}
                   height={120}
+                  sizes=""
                 />
               </div>
               <div>
