@@ -1,28 +1,47 @@
-"use client"
+"use client";
 
-import { usePropertiesStore } from "@/stores/propertiesStore"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Badge } from "@/components/ui/badge"
-import { Search, Home, Bed, Bath, MapPin, DollarSign, RotateCcw, Filter } from "lucide-react"
+import { usePropertiesStore } from "@/stores/propertiesStore";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import {
+  Search,
+  Home,
+  Bed,
+  Bath,
+  MapPin,
+  DollarSign,
+  RotateCcw,
+  Filter,
+} from "lucide-react";
+import { useCallback } from "react";
 
 const FiltersSidebar = () => {
-  const { filters, setFilters, getAllProperties } = usePropertiesStore()
+  const { filters, setFilters, getAllProperties } = usePropertiesStore();
 
-  const handleChange = (key: string, value: any) => {
-    setFilters({ [key]: value })
-  }
+  const handleChange = useCallback(
+    (key: string, value: any) => {
+      setFilters({ [key]: value });
+    },
+    [setFilters]
+  );
 
-  const handleApply = () => {
-    setFilters({ page: 1 }) 
-    getAllProperties()
-  }
+  const handleApply = useCallback(() => {
+    setFilters({ page: 1 });
+    getAllProperties();
+  }, [setFilters, getAllProperties]);
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     setFilters({
       search: "",
       minPrice: undefined,
@@ -34,15 +53,15 @@ const FiltersSidebar = () => {
       location: "",
       page: 1,
       limit: 10,
-    })
-    getAllProperties()
-  }
+    });
+    getAllProperties();
+  }, [setFilters, getAllProperties]);
 
   // Count active filters
   const activeFiltersCount = Object.entries(filters).filter(([key, value]) => {
-    if (key === "page" || key === "limit") return false
-    return value !== "" && value !== undefined && value !== null
-  }).length
+    if (key === "page" || key === "limit") return false;
+    return value !== "" && value !== undefined && value !== null;
+  }).length;
 
   return (
     <Card className="w-full mb-10   h-fit sticky top-4">
@@ -61,7 +80,10 @@ const FiltersSidebar = () => {
       <CardContent className="space-y-6">
         {/* Search */}
         <div className="space-y-2">
-          <Label htmlFor="search" className="text-sm font-medium flex items-center gap-2">
+          <Label
+            htmlFor="search"
+            className="text-sm font-medium flex items-center gap-2"
+          >
             <Search className="h-4 w-4" />
             Search
           </Label>
@@ -85,27 +107,37 @@ const FiltersSidebar = () => {
           </Label>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <Label htmlFor="minPrice" className="text-xs text-muted-foreground">
+              <Label
+                htmlFor="minPrice"
+                className="text-xs text-muted-foreground"
+              >
                 Min Price
               </Label>
               <Input
                 id="minPrice"
                 type="number"
                 value={filters.minPrice || ""}
-                onChange={(e) => handleChange("minPrice", Number(e.target.value) || undefined)}
+                onChange={(e) =>
+                  handleChange("minPrice", Number(e.target.value) || undefined)
+                }
                 placeholder="0"
                 className="w-full"
               />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="maxPrice" className="text-xs text-muted-foreground">
+              <Label
+                htmlFor="maxPrice"
+                className="text-xs text-muted-foreground"
+              >
                 Max Price
               </Label>
               <Input
                 id="maxPrice"
                 type="number"
                 value={filters.maxPrice || ""}
-                onChange={(e) => handleChange("maxPrice", Number(e.target.value) || undefined)}
+                onChange={(e) =>
+                  handleChange("maxPrice", Number(e.target.value) || undefined)
+                }
                 placeholder="Any"
                 className="w-full"
               />
@@ -121,7 +153,10 @@ const FiltersSidebar = () => {
             <Home className="h-4 w-4" />
             Property Type
           </Label>
-          <Select value={filters.propertyType || "any"} onValueChange={(value) => handleChange("propertyType", value)}>
+          <Select
+            value={filters.propertyType || "any"}
+            onValueChange={(value) => handleChange("propertyType", value)}
+          >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Any type" />
             </SelectTrigger>
@@ -139,7 +174,10 @@ const FiltersSidebar = () => {
         {/* Furnishing */}
         <div className="space-y-2">
           <Label className="text-sm font-medium">Furnishing</Label>
-          <Select value={filters.furnishing || "any"} onValueChange={(value) => handleChange("furnishing", value)}>
+          <Select
+            value={filters.furnishing || "any"}
+            onValueChange={(value) => handleChange("furnishing", value)}
+          >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Any furnishing" />
             </SelectTrigger>
@@ -159,7 +197,10 @@ const FiltersSidebar = () => {
           <Label className="text-sm font-medium">Rooms</Label>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <Label htmlFor="bedroom" className="text-xs text-muted-foreground flex items-center gap-1">
+              <Label
+                htmlFor="bedroom"
+                className="text-xs text-muted-foreground flex items-center gap-1"
+              >
                 <Bed className="h-3 w-3" />
                 Bedrooms
               </Label>
@@ -167,14 +208,19 @@ const FiltersSidebar = () => {
                 id="bedroom"
                 type="number"
                 value={filters.bedroom || ""}
-                onChange={(e) => handleChange("bedroom", Number(e.target.value) || undefined)}
+                onChange={(e) =>
+                  handleChange("bedroom", Number(e.target.value) || undefined)
+                }
                 placeholder="Any"
                 min={0}
                 className="w-full"
               />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="bathroom" className="text-xs text-muted-foreground flex items-center gap-1">
+              <Label
+                htmlFor="bathroom"
+                className="text-xs text-muted-foreground flex items-center gap-1"
+              >
                 <Bath className="h-3 w-3" />
                 Bathrooms
               </Label>
@@ -182,7 +228,9 @@ const FiltersSidebar = () => {
                 id="bathroom"
                 type="number"
                 value={filters.bathroom || ""}
-                onChange={(e) => handleChange("bathroom", Number(e.target.value) || undefined)}
+                onChange={(e) =>
+                  handleChange("bathroom", Number(e.target.value) || undefined)
+                }
                 placeholder="Any"
                 min={0}
                 className="w-full"
@@ -195,7 +243,10 @@ const FiltersSidebar = () => {
 
         {/* Location */}
         <div className="space-y-2">
-          <Label htmlFor="location" className="text-sm font-medium flex items-center gap-2">
+          <Label
+            htmlFor="location"
+            className="text-sm font-medium flex items-center gap-2"
+          >
             <MapPin className="h-4 w-4" />
             Location
           </Label>
@@ -216,14 +267,19 @@ const FiltersSidebar = () => {
           <Button onClick={handleApply} className="w-full" size="lg">
             Apply Filters
           </Button>
-          <Button onClick={handleReset} variant="outline" className="w-full bg-transparent" size="lg">
+          <Button
+            onClick={handleReset}
+            variant="outline"
+            className="w-full bg-transparent"
+            size="lg"
+          >
             <RotateCcw className="h-4 w-4 mr-2" />
             Reset All
           </Button>
         </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
-export default FiltersSidebar
+export default FiltersSidebar;
