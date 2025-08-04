@@ -20,7 +20,7 @@ interface Properties {
   area: number;
   bedroom: number;
   bathroom: number;
-  images: string[]; 
+  images: string[];
   propertyType: "house" | "apartment" | "villa" | "studio" | "commercial";
   furnishing: "furnished" | "semi-furnished" | "unfurnished";
   status: "active" | "sold" | "pending";
@@ -140,9 +140,12 @@ export const usePropertiesStore = create<PropertiesState>((set, get) => ({
     try {
       set({ loading: true, error: null });
 
-      const response = await axios.patch(`${baseURL}/api/property/status/${id}`, {
-        status: newStatus,
-      });
+      const response = await axios.patch(
+        `${baseURL}/api/property/status/${id}`,
+        {
+          status: newStatus,
+        }
+      );
 
       // Optional: update agentProperties in-place
       set((state) => ({
@@ -162,7 +165,9 @@ export const usePropertiesStore = create<PropertiesState>((set, get) => ({
   getAgentProperties: async (agentId: string) => {
     try {
       set({ loading: true, error: null });
-      const response = await axios.get(`${baseURL}/api/property/agent/${agentId}`);
+      const response = await axios.get(
+        `${baseURL}/api/property/agent/${agentId}`
+      );
 
       set({ agentProperties: response.data.properties, loading: false });
     } catch (error: any) {
@@ -197,6 +202,8 @@ export const usePropertiesStore = create<PropertiesState>((set, get) => ({
       const response = await axios.get(`${baseURL}/api/property/all`, {
         params: filters,
       });
+      console.log("Fetched properties:", response.data.properties);
+
       set({
         properties: response.data.properties,
         total: response.data.total,

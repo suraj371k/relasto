@@ -28,14 +28,6 @@ import { useAuthStore } from "@/stores/authStore";
 
 const Navbar = () => {
   const pathname = usePathname();
-  const items = [
-    { id: 1, name: "Home", href: "/"  },
-    { id: 2, name: "Listings", href: "/listings"  },
-    { id: 3, name: "About us", href: "/about" },
-    { id: 4, name: "Agent", href: "/agents"  },
-  ];
-
-
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -59,23 +51,23 @@ const Navbar = () => {
     },
   };
 
-  const { user, fetchProfile , logout , loading } = useAuthStore();
-
+  const { user, fetchProfile, logout, loading } = useAuthStore();
 
   useEffect(() => {
     fetchProfile();
   }, [fetchProfile]);
 
   const firstLetter = user?.name?.charAt(0).toUpperCase();
+  const baseItems = [
+    { id: 1, name: "Home", href: "/" },
+    { id: 2, name: "Listings", href: "/listings" },
+    { id: 3, name: "About us", href: "/about" },
+  ];
 
-  // const filteredItems = items.filter(item => {
-  //   // If no role is specified, show to everyone
-  //   if (!item.role) return true;
-  //   // If user is not logged in, don't show role-specific items
-  //   if (!user) return false;
-  //   // Show if user's role matches item's role
-  //   return user.role === item.role;
-  // });
+  const items =
+    user?.role === "user"
+      ? [...baseItems, { id: 4, name: "Agent", href: "/agents" }]
+      : baseItems;
 
   return (
     <motion.nav
@@ -152,7 +144,7 @@ const Navbar = () => {
                 <DropdownMenuItem
                   className="text-red-600 cursor-pointer"
                   onClick={() => {
-                    logout()
+                    logout();
                   }}
                 >
                   Logout
@@ -231,10 +223,11 @@ const Navbar = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
                 >
-          
-                  <Button variant="default" className="w-full">
-                    Login
-                  </Button>
+                  <Link href={"/auth/login"}>
+                    <Button variant="default" className="w-full">
+                      Login
+                    </Button>
+                  </Link>
                 </motion.div>
               </motion.div>
             </SheetContent>

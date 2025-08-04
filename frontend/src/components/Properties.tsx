@@ -3,20 +3,16 @@ import { Button } from "@/components/ui/button";
 import { usePropertiesStore } from "@/stores/propertiesStore";
 import { AreaChartIcon, Bath, Bed, LocationEdit, Type } from "lucide-react";
 import Link from "next/link";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { Skeleton } from "./ui/skeleton";
 import { usePathname } from "next/navigation";
 
 const Properties = () => {
   const { properties, getAllProperties, loading } = usePropertiesStore();
 
-  const fetchProperties = useCallback(() => {
+  useEffect(() => {
     getAllProperties();
   }, [getAllProperties]);
-
-  useEffect(() => {
-    fetchProperties();
-  }, [fetchProperties]);
 
   const pathname = usePathname();
   const isHome = pathname === "/";
@@ -50,9 +46,7 @@ const Properties = () => {
     <div className="w-full px-4 md:px-8 lg:px-12">
       <div className={`grid ${gridCols} place-items-center gap-8 mt-5 mb-10`}>
         {loading
-          ? Array.from({ length: 6 }).map((_, i) => (
-              <PropertyCardSkeleton key={i} />
-            ))
+          ? Array.from({ length: 6 }).map((_, i) => <PropertyCardSkeleton key={i} />)
           : properties.map((property, index) => (
               <div
                 key={index}
@@ -90,9 +84,7 @@ const Properties = () => {
                   </div>
                   <div className="flex justify-between items-center">
                     <Button>
-                      <Link href={`/listings/${property._id}`}>
-                        View Details
-                      </Link>
+                      <Link href={`/listings/${property._id}`}>View Details</Link>
                     </Button>
                     <p className="text-2xl font-bold">${property.price}</p>
                   </div>
@@ -105,3 +97,4 @@ const Properties = () => {
 };
 
 export default Properties;
+ 
